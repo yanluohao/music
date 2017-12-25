@@ -8,6 +8,28 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+// 接口转发
+const express = require("express");
+const app = express();
+var apiRoutes = express.Router();
+
+apiRoutes.get('/getDiscList', function (req, res, next) {
+    axios.get(url, {
+        headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+        },
+        params: req.query
+    }).then((response) => {
+        res.json(response.data)
+    }).catch((e) => {
+        console.log(e)
+    })
+})
+
+app.use('/api', apiRoutes)
+// 接口转发结束
+
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
