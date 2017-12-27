@@ -12,6 +12,7 @@ const portfinder = require('portfinder')
 const express = require("express");
 const app = express();
 var apiRoutes = express.Router();
+const axios = require("axios");
 
 apiRoutes.get('/getDiscList', function (req, res, next) {
     axios.get(url, {
@@ -27,10 +28,9 @@ apiRoutes.get('/getDiscList', function (req, res, next) {
     })
 })
 
-app.use('/api', apiRoutes)
 // 接口转发结束
 
-const HOST = process.env.HOST
+const HOST = process.env.HOST || '0.0.0.0'
 const PORT = process.env.PORT && Number(process.env.PORT)
 
 const devWebpackConfig = merge(baseWebpackConfig, {
@@ -42,6 +42,24 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
     // these devServer options should be customized in /config/index.js
     devServer: {
+        before(app) {
+            app.get('/api/getDiscList', (req, res) => {
+                const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg';
+                axios.get(url, {
+                    headers: {
+                        referer: 'https://c.y.qq.com/',
+                        host: 'c.y.qq.com',
+                    },
+                    params: req.query
+                }).then((response) => {
+                    res.json(response.data)
+                }).catch((e) => {
+                    console.log(e);
+                })
+            })
+
+            app.use('/api', apiRoutes);
+        },
         clientLogLevel: 'warning',
         historyApiFallback: true,
         hot: true,

@@ -1,22 +1,32 @@
 <template>
     <div class="recommend">
-        <div class="recomment-content">
-            <div class="slider-wrapper" v-if="recommends.length > 0">
-                <slider>
-                    <div v-for="item in recommends">
-                        <a :href="item.linkUrl">
+        <scroll class="recommend-content" :data="discList" ref="scroll">
+            <div>
+                <div class="slider-wrapper" v-if="recommends.length > 0">
+                    <slider>
+                        <div v-for="item in recommends">
+                            <!--<a :href="item.linkUrl">-->
                             <img :src="item.picUrl" alt="">
-                        </a>
-                    </div>
-                </slider>
+                            <!--</a>-->
+                        </div>
+                    </slider>
+                </div>
+                <div class="recommend-list">
+                    <h1 class="list-title">热门歌单推荐</h1>
+                    <ul>
+                        <li v-for="item in discList" class="item">
+                            <div class="icon">
+                                <img width="60" height="60" :src="item.imgurl" @load="loadImage" alt="">
+                            </div>
+                            <div class="text">
+                                <h2 class="name" v-html="item.creator.name"></h2>
+                                <p class="desc" v-html="item.dissname"></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="recommend-list">
-                <h1 class="list-title">热门歌单推荐</h1>
-                <ul>
-
-                </ul>
-            </div>
-        </div>
+        </scroll>
     </div>
 </template>
 
@@ -24,11 +34,13 @@
     import {getRecommend, getDiscList} from "api/recommend"
     import {ERR_OK} from "api/config"
     import Slider from "base/slider/slider"
+    import Scroll from "base/scroll/scroll"
 
     export default {
         data() {
             return {
-                recommends: []
+                recommends: [],
+                discList: [],
             }
         },
         created() {
@@ -45,14 +57,21 @@
             },
             _getDiscList() {
                 getDiscList().then((res) => {
-                    if(res.code == ERR_OK) {
-
+                    if (res.code == ERR_OK) {
+                        this.discList = res.data.list;
                     }
                 })
+            },
+            loadImage() {
+                if (!this.checkloaded) {
+                    this.$refs.scroll.refresh();
+                    this.checkloaded = true;
+                }
             }
         },
         components: {
-            Slider
+            Slider,
+            Scroll
         }
     }
 </script>
@@ -77,6 +96,7 @@
             width: 100%
             top: 50%
             transform: translateY(-50%)
+
     .recommend-list
         .list-title
             height: 65px
