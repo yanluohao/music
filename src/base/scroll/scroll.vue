@@ -17,10 +17,10 @@
                 type: Boolean,
                 default: true
             },
-//            listenScroll: {
-//                type: Boolean,
-//                default: false
-//            },
+            listenScroll: {
+                type: Boolean,
+                default: false
+            },
             data: {
                 type: Array,
                 default: null
@@ -53,13 +53,13 @@
                     click: this.click
                 })
 
-//                if (this.listenScroll) {
-//                    let me = this
-//                    this.scroll.on('scroll', (pos) => {
-//                        me.$emit('scroll', pos)
-//                    })
-//                }
-//
+                if (this.listenScroll) {
+                    let me = this
+                    this.scroll.on('scroll', (pos) => {
+                        me.$emit('scroll', pos)
+                    })
+                }
+
 //                if (this.pullup) {
 //                    this.scroll.on('scrollEnd', () => {
 //                        if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
@@ -67,7 +67,7 @@
 //                        }
 //                    })
 //                }
-//
+
 //                if (this.beforeScroll) {
 //                    this.scroll.on('beforeScrollStart', () => {
 //                        this.$emit('beforeScroll')
