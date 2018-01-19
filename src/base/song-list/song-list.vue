@@ -27,7 +27,7 @@
                 return `${song.singer}·${song.album}`
             },
             selectItem(song, index) {
-                this.$emit('select', item, index);
+                this.$emit('select', song, index);
             }
         }
     }
