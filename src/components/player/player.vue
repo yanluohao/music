@@ -68,7 +68,7 @@
                 </div>
             </div>
         </transition>
-        <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="err" @timeupdate="updateTime"></audio>
+        <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="err" @timeupdate="updateTime" @ended="end"></audio>
     </div>
 </template>
 
@@ -192,6 +192,17 @@
             togglePlaying() {
                 this.setPlayingState(!this.playing);
             },
+            end() {
+                if(this.mode == playMode.loop) {
+                    this.loop();
+                }else  {
+                    this.next();
+                }
+            },
+            loop() {
+                this.$refs.audio.currentTime = 0;
+                this.$refs.audio.play();
+            },
             next() {
                 if (!this.songReady) return;
                 let index = this.currentIndex + 1;
@@ -238,7 +249,7 @@
             },
             onProgressBarChange(percent) {
                 this.$refs.audio.currentTime = this.currentSong.duration * percent;
-                if(!this.playing) this.playing = true;
+                if(!this.playing) this.setPlayingState(true);
             },
             changeMode() {
                 const mode = (this.mode + 1) % 3;
@@ -250,7 +261,7 @@
                 }else {
                     list = this.sequenceList;
                 }
-                this.resetCurrentIndex();
+                this.resetCurrentIndex(list);
                 this.setPlayList(list);
             },
             resetCurrentIndex(list) {
